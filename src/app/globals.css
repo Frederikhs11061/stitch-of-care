@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #F5F0E8;
+  --color-sand: #D4C4A8;
+  --color-warm-gray: #8C8278;
+  --color-dark-brown: #3D2B1F;
+  --color-soft-white: #FAFAF7;
+  --color-pale-sand: #EAE0CF;
+  --color-deep-brown: #2A1D13;
+
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Jost', system-ui, sans-serif;
+
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 1rem;
+
+  --tracking-widest: 0.25em;
+
+  --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-expo-in: cubic-bezier(0.7, 0, 0.84, 0);
+
+  --animate-marquee: marquee 28s linear infinite;
+  --animate-spin-slow: spin 12s linear infinite;
+
+  @keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-soft-white);
+  color: var(--color-dark-brown);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+body.cart-open { overflow: hidden; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--color-cream); }
+::-webkit-scrollbar-thumb { background: var(--color-sand); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-warm-gray); }
+
+::selection { background: var(--color-sand); color: var(--color-dark-brown); }
+
+:focus-visible {
+  outline: 1.5px solid var(--color-warm-gray);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+
+.cart-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(42, 29, 19, 0.35);
+  backdrop-filter: blur(3px);
+  z-index: 49;
+}
+
+.img-zoom { overflow: hidden; }
+.img-zoom img {
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.img-zoom:hover img {
+  transform: scale(1.04);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--color-sand);
+}
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+}
+
+#stripe-container { width: 100%; }
+.resend-form { width: 100%; }
