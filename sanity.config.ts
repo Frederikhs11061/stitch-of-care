@@ -1,6 +1,5 @@
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
-import { visionTool } from "@sanity/vision";
 import { schemaTypes } from "./sanity/schemaTypes";
 
 const singletons = ["globalSettings", "homePage", "aboutPage", "faqPage", "patternsPage", "blogPage"];
@@ -43,7 +42,6 @@ export default defineConfig({
             S.documentTypeListItem("post").title("📖 Blogindlæg"),
           ]),
     }),
-    visionTool(),
   ],
   schema: {
     types: schemaTypes,
