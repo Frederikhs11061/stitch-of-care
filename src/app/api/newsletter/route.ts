@@ -46,7 +46,7 @@ export async function POST(req: Request) {
     // Notify yourself
     await resend.emails.send({
       from: "Stitch of Care <hej@konvertio.dk>",
-      to: "hej@stitchofcare.dk",
+      to: "frederik@konvertio.dk",
       subject: `Ny tilmelding: ${email}`,
       html: `<p>Ny nyhedsbrevstilmelding: <strong>${email}</strong></p>`,
     });

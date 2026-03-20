@@ -303,7 +303,7 @@ export async function POST(req: Request) {
   // Notify store
   await resend.emails.send({
     from: "Stitch of Care <hej@konvertio.dk>",
-    to: "hej@stitchofcare.dk",
+    to: "frederik@konvertio.dk",
     subject: `Nyt salg: ${patternNames.join(", ")} — ${customerEmail}`,
     html: `
       <p><strong>Nyt salg!</strong></p>
