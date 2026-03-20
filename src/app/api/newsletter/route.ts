@@ -11,6 +11,12 @@ export async function POST(req: Request) {
   }
 
   try {
+    // Save to Resend Audience for campaigns
+    const audienceId = process.env.RESEND_AUDIENCE_ID;
+    if (audienceId) {
+      await resend.contacts.create({ email, audienceId, unsubscribed: false });
+    }
+
     // Send confirmation email to subscriber
     await resend.emails.send({
       from: "Stitch of Care <onboarding@resend.dev>",
