@@ -213,7 +213,7 @@ export async function POST(req: Request) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const session = event.data.object as any;
-  const customerEmail = session.customer_details?.email ?? session.customer_email;
+  const customerEmail = (session.customer_details?.email ?? session.customer_email ?? "").toLowerCase();
   const customerName = session.customer_details?.name ?? "";
 
   if (!customerEmail) {
@@ -274,7 +274,7 @@ export async function POST(req: Request) {
   const firstName = customerName ? customerName.split(" ")[0] : "";
 
   await resend.emails.send({
-    from: "Stitch of Care <hej@konvertio.dk>",
+    from: "Stitch of Care <onboarding@resend.dev>",
     to: customerEmail,
     subject: "Din Stitch of Care opskrift ✦",
     attachments: attachments.map((a) => ({
@@ -302,8 +302,8 @@ export async function POST(req: Request) {
 
   // Notify store
   await resend.emails.send({
-    from: "Stitch of Care <hej@konvertio.dk>",
-    to: "frederik@konvertio.dk",
+    from: "Stitch of Care <onboarding@resend.dev>",
+    to: "frederik.hs@live.dk",
     subject: `Nyt salg: ${patternNames.join(", ")} — ${customerEmail}`,
     html: `
       <p><strong>Nyt salg!</strong></p>

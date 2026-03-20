@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
     // Send confirmation email to subscriber
     await resend.emails.send({
-      from: "Stitch of Care <hej@konvertio.dk>",
+      from: "Stitch of Care <onboarding@resend.dev>",
       to: email,
       subject: "Velkommen til Stitch of Care ✦",
       html: `
@@ -45,8 +45,8 @@ export async function POST(req: Request) {
 
     // Notify yourself
     await resend.emails.send({
-      from: "Stitch of Care <hej@konvertio.dk>",
-      to: "frederik@konvertio.dk",
+      from: "Stitch of Care <onboarding@resend.dev>",
+      to: "frederik.hs@live.dk",
       subject: `Ny tilmelding: ${email}`,
       html: `<p>Ny nyhedsbrevstilmelding: <strong>${email}</strong></p>`,
     });
