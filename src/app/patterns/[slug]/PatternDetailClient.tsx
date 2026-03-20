@@ -197,7 +197,7 @@ export function PatternDetailClient({ pattern }: Props) {
                 <motion.button
                   onClick={handleAddToCart}
                   whileTap={{ scale: 0.98 }}
-                  className={`w-full h-14 flex items-center justify-center gap-2 font-sans text-xs tracking-widest uppercase transition-all duration-300 mb-3 ${
+                  className={`w-full h-16 sm:h-14 flex items-center justify-center gap-2 font-sans text-sm sm:text-xs tracking-widest uppercase transition-all duration-300 mb-3 ${
                     added || isInCart
                       ? "bg-dark-brown/80 text-soft-white"
                       : "bg-dark-brown text-soft-white hover:bg-deep-brown"
