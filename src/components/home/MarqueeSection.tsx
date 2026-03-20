@@ -5,20 +5,27 @@ import { useLanguage } from "@/context/LanguageContext";
 export function MarqueeSection() {
   const { t } = useLanguage();
   const items = t.marquee.items;
-
-  // Duplicate for seamless loop
   const doubled = [...items, ...items];
 
   return (
-    <div className="border-y border-sand/40 bg-cream py-4 overflow-hidden select-none">
+    <div className="border-y border-sand/60 bg-cream py-4 overflow-hidden select-none">
       <div className="marquee-track">
         {doubled.map((item, i) => (
           <span
             key={i}
-            className="flex items-center gap-6 px-6 font-sans text-xs tracking-widest uppercase text-warm-gray whitespace-nowrap"
+            className="flex items-center gap-8 px-8 font-sans text-[0.6rem] tracking-[0.28em] uppercase text-warm-gray whitespace-nowrap"
           >
             {item}
-            <span className="block w-1 h-1 rounded-full bg-sand flex-shrink-0" />
+            {/* Diamond separator */}
+            <svg
+              width="4"
+              height="4"
+              viewBox="0 0 5 5"
+              className="flex-shrink-0 text-dim-gold/60"
+              fill="currentColor"
+            >
+              <polygon points="2.5,0 5,2.5 2.5,5 0,2.5" />
+            </svg>
           </span>
         ))}
       </div>

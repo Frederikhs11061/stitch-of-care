@@ -36,7 +36,7 @@ function Overlay({
     <div className={`absolute bottom-0 left-0 right-0 ${large ? "p-6 lg:p-9" : "p-3.5 lg:p-5"}`}>
       <p
         className={`font-sans tracking-[0.28em] uppercase text-pale-gold/75 mb-1.5 ${
-          large ? "text-[0.5rem] lg:text-[0.58rem]" : "text-[0.45rem] lg:text-[0.5rem]"
+          large ? "text-[0.6rem] lg:text-[0.65rem]" : "text-[0.55rem] lg:text-[0.6rem]"
         }`}
       >
         {eyebrow}
@@ -45,8 +45,8 @@ function Overlay({
       <p
         className={`font-serif font-light text-soft-white leading-[0.9] ${
           large
-            ? "text-[clamp(1.75rem,4.5vw,3.8rem)]"
-            : "text-[clamp(0.95rem,2.2vw,1.35rem)]"
+            ? "text-[clamp(2rem,5vw,4rem)]"
+            : "text-[clamp(1.1rem,2.5vw,1.5rem)]"
         }`}
       >
         {title}
@@ -59,7 +59,7 @@ function Overlay({
           transition={{ delay: 1.4, duration: 0.7, ease: EXPO }}
           className="mt-3 lg:mt-5 flex items-center gap-2 group/cta"
         >
-          <span className="font-sans text-[0.5rem] lg:text-[0.55rem] tracking-[0.28em] uppercase text-pale-gold/65 group-hover/cta:text-pale-gold transition-colors duration-300">
+          <span className="font-sans text-[0.6rem] lg:text-[0.65rem] tracking-[0.28em] uppercase text-pale-gold/80 group-hover/cta:text-pale-gold transition-colors duration-300">
             {cta}
           </span>
           <ArrowRight
@@ -151,7 +151,7 @@ export function HeroSection() {
             </motion.div>
 
             {/* Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-obsidian/80 via-obsidian/10 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/20 to-transparent" />
 
             {/* New badge */}
             <motion.div
@@ -197,7 +197,7 @@ export function HeroSection() {
                 sizes="(max-width: 1024px) 50vw, 37vw"
               />
               {/* Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-obsidian/75 via-obsidian/10 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-obsidian/85 via-obsidian/15 to-transparent" />
               {/* Hover gleam */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-br from-pale-gold/6 to-transparent transition-opacity duration-500" />
               <Overlay eyebrow={tile.eyebrow} title={tile.title} />
