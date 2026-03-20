@@ -32,16 +32,27 @@ export function NewsletterSection({ sanityData }: { sanityData?: NewsletterSanit
   const successMsg = loc(s?.successMessage, language, t.newsletter.success);
   const disclaimer = loc(s?.disclaimer, language, t.newsletter.disclaimer);
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email) return;
     setStatus("loading");
-    setTimeout(() => {
-      setStatus("success");
-      setEmail("");
-    }, 1000);
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        setStatus("success");
+        setEmail("");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
   }
 
   return (
@@ -133,6 +144,11 @@ export function NewsletterSection({ sanityData }: { sanityData?: NewsletterSanit
             )}
           </AnimatePresence>
 
+          {status === "error" && (
+            <p className="font-sans text-xs text-warm-gray mt-3">
+              Noget gik galt — prøv igen eller skriv til hej@stitchofcare.dk
+            </p>
+          )}
           <p className="font-sans text-xs tracking-wider text-warm-gray/60 mt-5">
             {disclaimer}
           </p>
