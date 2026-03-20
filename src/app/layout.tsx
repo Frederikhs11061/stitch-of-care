@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ConvexClientProvider } from "@/components/ConvexClientProvider";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { CartProvider } from "@/context/CartContext";
 import { Navbar } from "@/components/layout/Navbar";
@@ -91,16 +90,14 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-soft-white text-dark-brown antialiased">
-        <ConvexClientProvider>
-          <LanguageProvider>
-            <CartProvider>
-              <Navbar />
-              <CartDrawer />
-              <main>{children}</main>
-              <Footer />
-            </CartProvider>
-          </LanguageProvider>
-        </ConvexClientProvider>
+        <LanguageProvider>
+          <CartProvider>
+            <Navbar />
+            <CartDrawer />
+            <main>{children}</main>
+            <Footer />
+          </CartProvider>
+        </LanguageProvider>
       </body>
     </html>
   );
