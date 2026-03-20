@@ -7,17 +7,21 @@ import { cn } from "@/lib/utils";
 
 interface CartIconProps {
   className?: string;
+  variant?: "default" | "dark";
 }
 
-export function CartIcon({ className }: CartIconProps) {
+export function CartIcon({ className, variant = "default" }: CartIconProps) {
   const { itemCount, openCart } = useCart();
+  const isDark = variant === "dark";
 
   return (
     <button
       onClick={openCart}
       className={cn(
-        "relative flex items-center justify-center w-10 h-10",
-        "text-dark-brown hover:text-warm-gray transition-colors duration-200",
+        "relative flex items-center justify-center w-10 h-10 transition-colors duration-200",
+        isDark
+          ? "text-warm-gray hover:text-gold"
+          : "text-dark-brown hover:text-warm-gray",
         className
       )}
       aria-label={`Cart (${itemCount} items)`}
@@ -31,7 +35,12 @@ export function CartIcon({ className }: CartIconProps) {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             transition={{ type: "spring", stiffness: 500, damping: 22 }}
-            className="absolute -top-0.5 -right-0.5 flex items-center justify-center w-4 h-4 rounded-full bg-dark-brown text-soft-white font-sans text-2xs font-medium"
+            className={cn(
+              "absolute -top-0.5 -right-0.5 flex items-center justify-center w-4 h-4 rounded-full font-sans text-2xs font-medium",
+              isDark
+                ? "bg-gold text-obsidian"
+                : "bg-dark-brown text-soft-white"
+            )}
           >
             {itemCount > 9 ? "9+" : itemCount}
           </motion.span>

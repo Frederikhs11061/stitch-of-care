@@ -11,25 +11,50 @@ import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/ui/
 import { Pattern } from "@/types/pattern";
 import { formatPrice } from "@/lib/utils";
 
-interface FeaturedProductProps {
-  pattern: Pattern;
+function sanityImgUrl(img: { asset?: { url?: string } } | null | undefined, fallback: string): string {
+  return img?.asset?.url ?? fallback;
 }
 
-export function FeaturedProduct({ pattern }: FeaturedProductProps) {
+interface FeaturedProductProps {
+  pattern: Pattern;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sanityPattern?: any;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function FeaturedProduct({ pattern, sanityPattern }: FeaturedProductProps) {
   const { t, language } = useLanguage();
   const { addItem, items } = useCart();
   const [added, setAdded] = useState(false);
   const [activeImage, setActiveImage] = useState<"front" | "back">("front");
 
-  const isInCart = items.some((i) => i.id === pattern.id);
+  const sp = sanityPattern;
+  const id = sp?._id ?? pattern.id;
+  const name = sp?.name ?? pattern.name;
+  const slug = sp?.slug ?? pattern.slug;
+  const price = sp?.price ?? pattern.price;
+  const priceEur = sp?.priceEur ?? pattern.priceEur;
+  const description = sp?.description ?? pattern.description;
+  const backText = sp?.backText ?? pattern.backText;
+  const isNew = sp?.isNew ?? pattern.new;
+  const difficultyLabel = sp?.difficultyLabel ?? pattern.difficultyLabel;
+  const yarnWeight = sp?.yarnWeight ?? pattern.yarnWeight;
+  const pages = sp?.pages ?? pattern.pages;
+  const sizes = sp?.sizes ?? pattern.sizes;
+  const frontImg = sanityImgUrl(sp?.images?.front, pattern.images.front);
+  const backImg = sp?.images?.back?.asset?.url ?? pattern.images.back ?? pattern.images.front;
+  const frontAlt = sp?.images?.frontAlt?.[language] ?? name;
+  const backAlt = sp?.images?.backAlt?.[language] ?? (backText ? `${name} – "${backText}"` : name);
+
+  const isInCart = items.some((i) => i.id === id);
 
   function handleAddToCart() {
     addItem({
-      id: pattern.id,
-      name: pattern.name,
-      price: pattern.price,
-      priceEur: pattern.priceEur,
-      image: pattern.images.front,
+      id,
+      name,
+      price,
+      priceEur,
+      image: frontImg,
       quantity: 1,
     });
     setAdded(true);
@@ -55,23 +80,15 @@ export function FeaturedProduct({ pattern }: FeaturedProductProps) {
           <AnimatedSection direction="left" className="relative">
             <div className="relative aspect-[3/4] bg-pale-sand overflow-hidden img-zoom group">
               <Image
-                src={
-                  activeImage === "front"
-                    ? pattern.images.front
-                    : pattern.images.back || pattern.images.front
-                }
-                alt={
-                  activeImage === "back" && pattern.backText
-                    ? `${pattern.name} – back: "${pattern.backText}"`
-                    : pattern.name
-                }
+                src={activeImage === "front" ? frontImg : backImg}
+                alt={activeImage === "back" ? backAlt : frontAlt}
                 fill
                 className="object-cover transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 priority
               />
 
-              {pattern.new && (
+              {isNew && (
                 <div className="absolute top-5 left-5 z-10">
                   <span className="bg-dark-brown text-cream font-sans text-[0.55rem] tracking-[0.25em] uppercase px-3 py-1.5">
                     {t.featuredProduct.new}
@@ -79,7 +96,7 @@ export function FeaturedProduct({ pattern }: FeaturedProductProps) {
                 </div>
               )}
 
-              {activeImage === "back" && pattern.backText && (
+              {activeImage === "back" && backText && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -90,14 +107,14 @@ export function FeaturedProduct({ pattern }: FeaturedProductProps) {
                       {t.product.backLabel}
                     </p>
                     <p className="font-serif text-xl font-light text-dark-brown italic">
-                      "{pattern.backText}"
+                      "{backText}"
                     </p>
                   </div>
                 </motion.div>
               )}
             </div>
 
-            {pattern.images.back && (
+            {(sp?.images?.back?.asset?.url || pattern.images.back) && (
               <div className="flex gap-3 mt-4">
                 {(["front", "back"] as const).map((view) => (
                   <button
@@ -110,8 +127,8 @@ export function FeaturedProduct({ pattern }: FeaturedProductProps) {
                     }`}
                   >
                     <Image
-                      src={view === "front" ? pattern.images.front : pattern.images.back!}
-                      alt={view}
+                      src={view === "front" ? frontImg : backImg}
+                      alt={view === "front" ? frontAlt : backAlt}
                       fill
                       className="object-cover"
                       sizes="100px"
@@ -127,16 +144,16 @@ export function FeaturedProduct({ pattern }: FeaturedProductProps) {
             <StaggerContainer staggerDelay={0.09} containerDelay={0.2}>
               <StaggerItem>
                 <h2 className="font-serif text-5xl lg:text-6xl font-light text-dark-brown leading-tight mb-3">
-                  {pattern.name}
+                  {name}
                 </h2>
               </StaggerItem>
 
-              {pattern.backText && (
+              {backText && (
                 <StaggerItem>
                   <p className="font-sans text-[0.6rem] tracking-[0.22em] text-warm-gray uppercase mb-6">
                     {t.product.backLabel}:{" "}
                     <span className="italic normal-case font-serif text-sm text-dark-brown">
-                      "{pattern.backText}"
+                      "{backText}"
                     </span>
                   </p>
                 </StaggerItem>
@@ -144,7 +161,7 @@ export function FeaturedProduct({ pattern }: FeaturedProductProps) {
 
               <StaggerItem>
                 <p className="font-sans text-sm text-warm-gray leading-relaxed mb-8 max-w-sm">
-                  {pattern.description[language]}
+                  {description[language]}
                 </p>
               </StaggerItem>
 
@@ -152,10 +169,10 @@ export function FeaturedProduct({ pattern }: FeaturedProductProps) {
               <StaggerItem>
                 <div className="grid grid-cols-2 gap-px bg-sand/40 mb-8">
                   {[
-                    { label: t.featuredProduct.difficulty, value: pattern.difficultyLabel[language] },
-                    { label: t.featuredProduct.yarnWeight, value: pattern.yarnWeight },
-                    { label: t.featuredProduct.sizes, value: pattern.sizes.join(", ") },
-                    { label: t.featuredProduct.pages, value: `${pattern.pages} ${t.featuredProduct.pages}` },
+                    { label: t.featuredProduct.difficulty, value: difficultyLabel[language] },
+                    { label: t.featuredProduct.yarnWeight, value: yarnWeight },
+                    { label: t.featuredProduct.sizes, value: sizes.join(", ") },
+                    { label: t.featuredProduct.pages, value: `${pages} ${t.featuredProduct.pages}` },
                   ].map((spec) => (
                     <div key={spec.label} className="bg-cream px-4 py-3">
                       <p className="font-sans text-[0.55rem] tracking-[0.25em] uppercase text-warm-gray mb-1">
@@ -192,7 +209,7 @@ export function FeaturedProduct({ pattern }: FeaturedProductProps) {
                       {t.product.format}
                     </p>
                     <p className="font-serif text-4xl font-light text-dark-brown">
-                      {formatPrice(pattern.price, pattern.priceEur, language)}
+                      {formatPrice(price, priceEur, language)}
                     </p>
                     <p className="font-sans text-xs text-warm-gray mt-0.5">{t.product.instant}</p>
                   </div>
@@ -224,7 +241,7 @@ export function FeaturedProduct({ pattern }: FeaturedProductProps) {
                     )}
                   </motion.button>
                   <Link
-                    href={`/patterns/${pattern.slug}`}
+                    href={`/patterns/${slug}`}
                     className="flex items-center justify-center gap-2 h-16 sm:h-12 px-6 bg-transparent border border-dark-brown text-dark-brown font-sans text-sm sm:text-[0.65rem] tracking-[0.22em] uppercase hover:bg-dark-brown hover:text-cream transition-all duration-300"
                   >
                     {t.featuredProduct.viewDetails}

@@ -12,25 +12,53 @@ import { Button } from "@/components/ui/Button";
 import { Pattern } from "@/types/pattern";
 import { formatPrice } from "@/lib/utils";
 
-interface Props {
-  pattern: Pattern;
+function sanityImgUrl(img: { asset?: { url?: string } } | null | undefined): string | undefined {
+  return img?.asset?.url || undefined;
 }
 
-export function PatternDetailClient({ pattern }: Props) {
+interface Props {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  pattern: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sanityPattern?: any;
+}
+
+export function PatternDetailClient({ pattern, sanityPattern }: Props) {
   const { t, language } = useLanguage();
   const { addItem, items } = useCart();
   const [added, setAdded] = useState(false);
   const [activeImage, setActiveImage] = useState<"front" | "back" | "detail" | "lifestyle">("front");
 
-  const isInCart = items.some((i) => i.id === pattern.id);
+  const sp = sanityPattern;
+  const id = sp?._id ?? pattern.id;
+  const name = sp?.name ?? pattern.name;
+  const slug = sp?.slug ?? pattern.slug;
+  const price = sp?.price ?? pattern.price;
+  const priceEur = sp?.priceEur ?? pattern.priceEur;
+  const longDescription = sp?.longDescription ?? pattern.longDescription;
+  const backText = sp?.backText ?? pattern.backText;
+  const isNew = sp?.isNew ?? pattern.new;
+  const difficultyLabel = sp?.difficultyLabel ?? pattern.difficultyLabel;
+  const yarnWeight = sp?.yarnWeight ?? pattern.yarnWeight;
+  const pages = sp?.pages ?? pattern.pages;
+  const sizes = sp?.sizes ?? pattern.sizes ?? [];
+
+  const frontImg = sanityImgUrl(sp?.images?.front) ?? pattern.images?.front ?? "";
+  const backImg = sanityImgUrl(sp?.images?.back) ?? pattern.images?.back;
+  const detailImg = sanityImgUrl(sp?.images?.detail) ?? pattern.images?.detail;
+  const lifestyleImg = sanityImgUrl(sp?.images?.lifestyle) ?? pattern.images?.lifestyle;
+  const frontAlt = sp?.images?.frontAlt?.[language] ?? name;
+  const backAlt = sp?.images?.backAlt?.[language] ?? (backText ? `"${backText}"` : name);
+
+  const isInCart = items.some((i) => i.id === id);
 
   function handleAddToCart() {
     addItem({
-      id: pattern.id,
-      name: pattern.name,
-      price: pattern.price,
-      priceEur: pattern.priceEur,
-      image: pattern.images.front,
+      id,
+      name,
+      price,
+      priceEur,
+      image: frontImg,
       quantity: 1,
     });
     setAdded(true);
@@ -38,14 +66,14 @@ export function PatternDetailClient({ pattern }: Props) {
   }
 
   const imageMap = {
-    front: pattern.images.front,
-    back: pattern.images.back || pattern.images.front,
-    detail: pattern.images.detail || pattern.images.front,
-    lifestyle: pattern.images.lifestyle || pattern.images.front,
+    front: frontImg,
+    back: backImg || frontImg,
+    detail: detailImg || frontImg,
+    lifestyle: lifestyleImg || frontImg,
   };
 
   const thumbKeys = (Object.keys(imageMap) as (keyof typeof imageMap)[]).filter(
-    (k) => k === "front" || pattern.images[k as keyof typeof pattern.images]
+    (k) => k === "front" || (k === "back" ? !!backImg : k === "detail" ? !!detailImg : !!lifestyleImg)
   );
 
   return (
@@ -58,7 +86,7 @@ export function PatternDetailClient({ pattern }: Props) {
             {t.nav.patterns}
           </Link>
           <span className="text-sand">/</span>
-          <span className="font-sans text-xs text-dark-brown">{pattern.name}</span>
+          <span className="font-sans text-xs text-dark-brown">{name}</span>
         </div>
       </div>
 
@@ -78,7 +106,7 @@ export function PatternDetailClient({ pattern }: Props) {
               >
                 <Image
                   src={imageMap[activeImage]}
-                  alt={activeImage === "back" && pattern.backText ? `"${pattern.backText}"` : pattern.name}
+                  alt={activeImage === "back" ? backAlt : frontAlt}
                   fill
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 50vw"
@@ -86,7 +114,7 @@ export function PatternDetailClient({ pattern }: Props) {
                 />
               </motion.div>
               {/* Back text overlay */}
-              {activeImage === "back" && pattern.backText && (
+              {activeImage === "back" && backText && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -94,11 +122,11 @@ export function PatternDetailClient({ pattern }: Props) {
                 >
                   <div className="bg-soft-white/95 px-6 py-4 w-full text-center">
                     <p className="font-sans text-2xs tracking-widest uppercase text-warm-gray mb-1">{t.product.backLabel}</p>
-                    <p className="font-serif text-2xl font-light text-dark-brown italic">"{pattern.backText}"</p>
+                    <p className="font-serif text-2xl font-light text-dark-brown italic">"{backText}"</p>
                   </div>
                 </motion.div>
               )}
-              {pattern.new && (
+              {isNew && (
                 <div className="absolute top-5 left-5">
                   <span className="bg-dark-brown text-soft-white font-sans text-2xs tracking-widest uppercase px-3 py-1.5">
                     {t.featuredProduct.new}
@@ -127,19 +155,19 @@ export function PatternDetailClient({ pattern }: Props) {
             <StaggerContainer staggerDelay={0.08} containerDelay={0.15}>
               <StaggerItem>
                 <h1 className="font-serif text-5xl lg:text-6xl font-light text-dark-brown leading-tight mb-3">
-                  {pattern.name}
+                  {name}
                 </h1>
               </StaggerItem>
-              {pattern.backText && (
+              {backText && (
                 <StaggerItem>
                   <p className="font-sans text-xs tracking-widest text-warm-gray uppercase mb-6">
-                    {t.product.backLabel}: <span className="font-serif text-base italic normal-case text-dark-brown">"{pattern.backText}"</span>
+                    {t.product.backLabel}: <span className="font-serif text-base italic normal-case text-dark-brown">"{backText}"</span>
                   </p>
                 </StaggerItem>
               )}
               <StaggerItem>
                 <p className="font-sans text-sm text-warm-gray leading-relaxed mb-8 max-w-sm">
-                  {pattern.longDescription[language]}
+                  {longDescription?.[language] ?? ""}
                 </p>
               </StaggerItem>
 
@@ -147,12 +175,12 @@ export function PatternDetailClient({ pattern }: Props) {
               <StaggerItem>
                 <div className="grid grid-cols-2 gap-px bg-sand/30 mb-8">
                   {[
-                    { label: t.product.difficulty, value: pattern.difficultyLabel[language] },
-                    { label: t.product.yarnWeight, value: pattern.yarnWeight },
-                    { label: t.product.sizes, value: pattern.sizes.join(" · ") },
+                    { label: t.product.difficulty, value: difficultyLabel?.[language] ?? "" },
+                    { label: t.product.yarnWeight, value: yarnWeight },
+                    { label: t.product.sizes, value: sizes.join(" · ") },
                     { label: t.product.language, value: t.product.languageValue },
                     { label: t.product.format, value: t.product.formatValue },
-                    { label: t.featuredProduct.pages, value: `${pattern.pages} ${t.featuredProduct.pages}` },
+                    { label: t.featuredProduct.pages, value: `${pages} ${t.featuredProduct.pages}` },
                   ].map((spec) => (
                     <div key={spec.label} className="bg-soft-white px-4 py-3">
                       <p className="font-sans text-2xs tracking-widest uppercase text-warm-gray mb-0.5">{spec.label}</p>
@@ -185,7 +213,7 @@ export function PatternDetailClient({ pattern }: Props) {
                 <div className="flex items-end justify-between mb-5">
                   <div>
                     <p className="font-serif text-5xl font-light text-dark-brown">
-                      {formatPrice(pattern.price, pattern.priceEur, language)}
+                      {formatPrice(price, priceEur, language)}
                     </p>
                     <div className="flex items-center gap-1.5 mt-1">
                       <Download size={11} strokeWidth={1.5} className="text-warm-gray" />
@@ -206,6 +234,7 @@ export function PatternDetailClient({ pattern }: Props) {
                   {added ? (
                     <><Check size={14} strokeWidth={2} /> {t.product.addedToCart}</>
                   ) : isInCart ? t.product.inCart : t.product.addToCart}
+
                 </motion.button>
                 <p className="font-sans text-xs text-center text-warm-gray">{t.cart.tax}</p>
               </StaggerItem>

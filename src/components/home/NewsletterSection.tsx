@@ -6,8 +6,31 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 
-export function NewsletterSection() {
-  const { t } = useLanguage();
+function loc(obj: { da?: string; en?: string } | null | undefined, lang: string, fallback: string) {
+  if (!obj) return fallback;
+  return (lang === "da" ? obj.da : obj.en) ?? fallback;
+}
+
+interface NewsletterSanityData {
+  eyebrow?: { da?: string; en?: string };
+  heading?: { da?: string; en?: string };
+  body?: { da?: string; en?: string };
+  placeholder?: { da?: string; en?: string };
+  ctaLabel?: { da?: string; en?: string };
+  successMessage?: { da?: string; en?: string };
+  disclaimer?: { da?: string; en?: string };
+}
+
+export function NewsletterSection({ sanityData }: { sanityData?: NewsletterSanityData | null }) {
+  const { t, language } = useLanguage();
+  const s = sanityData;
+  const eyebrow = loc(s?.eyebrow, language, t.newsletter.eyebrow);
+  const heading = loc(s?.heading, language, t.newsletter.heading);
+  const body = loc(s?.body, language, t.newsletter.body);
+  const placeholder = loc(s?.placeholder, language, t.newsletter.placeholder);
+  const ctaLabel = loc(s?.ctaLabel, language, t.newsletter.cta);
+  const successMsg = loc(s?.successMessage, language, t.newsletter.success);
+  const disclaimer = loc(s?.disclaimer, language, t.newsletter.disclaimer);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
 
@@ -35,7 +58,7 @@ export function NewsletterSection() {
           <div className="flex items-center justify-center gap-4 mb-8">
             <span className="block w-12 h-px bg-dim-gold/50" />
             <span className="font-sans text-[0.6rem] tracking-[0.35em] uppercase text-warm-gray">
-              {t.newsletter.eyebrow}
+              {eyebrow}
             </span>
             <span className="block w-12 h-px bg-dim-gold/50" />
           </div>
@@ -43,7 +66,7 @@ export function NewsletterSection() {
 
         <AnimatedSection delay={0.1}>
           <h2 className="font-serif text-4xl lg:text-5xl font-light text-dark-brown leading-[1.05] mb-6 whitespace-pre-line">
-            {t.newsletter.heading}
+            {heading}
           </h2>
         </AnimatedSection>
 
@@ -60,7 +83,7 @@ export function NewsletterSection() {
 
         <AnimatedSection delay={0.22}>
           <p className="font-sans text-sm text-warm-gray leading-relaxed mb-12 max-w-md mx-auto">
-            {t.newsletter.body}
+            {body}
           </p>
         </AnimatedSection>
 
@@ -76,7 +99,7 @@ export function NewsletterSection() {
                 <div className="w-8 h-8 rounded-full border border-gold/30 flex items-center justify-center">
                   <Check size={13} strokeWidth={2} className="text-gold" />
                 </div>
-                <p className="font-sans text-sm text-dark-brown">{t.newsletter.success}</p>
+                <p className="font-sans text-sm text-dark-brown">{successMsg}</p>
               </motion.div>
             ) : (
               <motion.form
@@ -88,7 +111,7 @@ export function NewsletterSection() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t.newsletter.placeholder}
+                  placeholder={placeholder}
                   className="flex-1 h-14 px-5 bg-soft-white border border-sand text-dark-brown font-sans text-sm placeholder:text-warm-gray/60 focus:outline-none focus:border-dark-brown/40 transition-colors duration-300"
                   required
                 />
@@ -101,7 +124,7 @@ export function NewsletterSection() {
                     <span className="w-3.5 h-3.5 border-2 border-obsidian border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <>
-                      {t.newsletter.cta}
+                      {ctaLabel}
                       <ArrowRight size={11} strokeWidth={2} />
                     </>
                   )}
@@ -111,7 +134,7 @@ export function NewsletterSection() {
           </AnimatePresence>
 
           <p className="font-sans text-xs tracking-wider text-warm-gray/60 mt-5">
-            {t.newsletter.disclaimer}
+            {disclaimer}
           </p>
         </AnimatedSection>
       </div>

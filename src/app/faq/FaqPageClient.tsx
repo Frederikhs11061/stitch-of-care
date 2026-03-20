@@ -8,9 +8,23 @@ import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/ui/
 import { Button } from "@/components/ui/Button";
 import { faqItems } from "@/data/faqData";
 
-export function FaqPageClient() {
+function loc(obj: { da?: string; en?: string } | null | undefined, lang: string, fallback: string) {
+  if (!obj) return fallback;
+  return (lang === "da" ? obj.da : obj.en) ?? fallback;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function FaqPageClient({ sanityData }: { sanityData?: any }) {
   const { t, language } = useLanguage();
   const [openId, setOpenId] = useState<string | null>(null);
+  const s = sanityData;
+  const items = s?.items?.length ? s.items : faqItems;
+  const eyebrow = loc(s?.eyebrow, language, t.faq.eyebrow);
+  const heading = loc(s?.heading, language, t.faq.heading);
+  const body = loc(s?.body, language, t.faq.body);
+  const stillQuestions = loc(s?.stillQuestions, language, t.faq.stillQuestions);
+  const stillBody = loc(s?.stillBody, language, t.faq.stillBody);
+  const contactCta = loc(s?.contactCta, language, t.faq.contactCta);
 
   function toggle(id: string) {
     setOpenId((prev) => (prev === id ? null : id));
@@ -25,18 +39,18 @@ export function FaqPageClient() {
             <div className="flex items-center gap-3 mb-6">
               <span className="block w-8 h-px bg-warm-gray" />
               <span className="font-sans text-xs tracking-widest uppercase text-warm-gray">
-                {t.faq.eyebrow}
+                {eyebrow}
               </span>
             </div>
           </AnimatedSection>
           <AnimatedSection delay={0.1}>
             <h1 className="font-serif text-6xl lg:text-8xl font-light text-dark-brown leading-none">
-              {t.faq.heading}
+              {heading}
             </h1>
           </AnimatedSection>
           <AnimatedSection delay={0.2}>
             <p className="font-sans text-sm text-warm-gray mt-4 max-w-md leading-relaxed">
-              {t.faq.body}
+              {body}
             </p>
           </AnimatedSection>
         </div>
@@ -109,10 +123,10 @@ export function FaqPageClient() {
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16">
           <AnimatedSection className="text-center max-w-lg mx-auto">
             <h2 className="font-serif text-3xl lg:text-4xl font-light text-dark-brown mb-3">
-              {t.faq.stillQuestions}
+              {stillQuestions}
             </h2>
             <p className="font-sans text-sm text-warm-gray mb-8">
-              {t.faq.stillBody}
+              {stillBody}
             </p>
             <Button
               href="mailto:hej@stitchofcare.dk"
@@ -121,7 +135,7 @@ export function FaqPageClient() {
               external
               icon={<ArrowRight size={14} strokeWidth={1.5} />}
             >
-              {t.faq.contactCta}
+              {contactCta}
             </Button>
           </AnimatedSection>
         </div>

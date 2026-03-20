@@ -6,8 +6,32 @@ import { useLanguage } from "@/context/LanguageContext";
 import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/ui/AnimatedSection";
 import { Button } from "@/components/ui/Button";
 
-export function AboutPageClient() {
-  const { t } = useLanguage();
+function loc(obj: { da?: string; en?: string } | null | undefined, lang: string, fallback: string) {
+  if (!obj) return fallback;
+  return (lang === "da" ? obj.da : obj.en) ?? fallback;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function AboutPageClient({ sanityData }: { sanityData?: any }) {
+  const { t, language } = useLanguage();
+  const s = sanityData;
+  const eyebrow = loc(s?.eyebrow, language, t.about.eyebrow);
+  const heading = s?.heading ?? t.about.heading;
+  const intro = loc(s?.intro, language, t.about.intro);
+  const portraitAlt = loc(s?.portraitAlt, language, "The maker");
+  const portraitSrc = s?.portrait?.asset?.url ?? "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=80";
+  const storyHeading = loc(s?.storyHeading, language, t.about.storyHeading);
+  const story = loc(s?.story, language, t.about.story);
+  const valuesHeading = loc(s?.valuesHeading, language, t.about.valuesHeading);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const values = (s?.values?.length ? s.values : t.about.values).map((v: any) => ({
+    title: typeof v.title === "string" ? v.title : loc(v.title, language, ""),
+    body: typeof v.body === "string" ? v.body : loc(v.body, language, ""),
+  }));
+  const contactHeading = loc(s?.contactHeading, language, t.about.contactHeading);
+  const contactBody = loc(s?.contactBody, language, t.about.contactBody);
+  const contactCta = loc(s?.contactCta, language, t.about.contactCta);
+  const followHeading = loc(s?.followHeading, language, t.about.followHeading);
 
   return (
     <div className="min-h-screen bg-soft-white">
@@ -20,18 +44,18 @@ export function AboutPageClient() {
                 <div className="flex items-center gap-3 mb-6">
                   <span className="block w-8 h-px bg-warm-gray" />
                   <span className="font-sans text-xs tracking-widest uppercase text-warm-gray">
-                    {t.about.eyebrow}
+                    {eyebrow}
                   </span>
                 </div>
               </AnimatedSection>
               <AnimatedSection delay={0.1}>
                 <h1 className="font-serif text-6xl lg:text-8xl font-light text-dark-brown leading-none mb-6">
-                  {t.about.heading}
+                  {heading}
                 </h1>
               </AnimatedSection>
               <AnimatedSection delay={0.2}>
                 <p className="font-sans text-sm text-warm-gray leading-relaxed max-w-md">
-                  {t.about.intro}
+                  {intro}
                 </p>
               </AnimatedSection>
             </div>
@@ -39,8 +63,8 @@ export function AboutPageClient() {
             <AnimatedSection direction="right" delay={0.15} className="relative">
               <div className="relative aspect-[4/3] lg:aspect-square bg-pale-sand overflow-hidden img-zoom max-w-sm ml-auto">
                 <Image
-                  src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=80"
-                  alt="The maker"
+                  src={portraitSrc}
+                  alt={portraitAlt}
                   fill
                   className="object-cover object-top"
                   sizes="(max-width: 1024px) 100vw, 40vw"
@@ -61,14 +85,14 @@ export function AboutPageClient() {
           <div className="lg:col-span-3">
             <AnimatedSection>
               <p className="font-sans text-xs tracking-widest uppercase text-warm-gray lg:sticky lg:top-28">
-                {t.about.storyHeading}
+                {storyHeading}
               </p>
             </AnimatedSection>
           </div>
           {/* Story text */}
           <div className="lg:col-span-7">
             <AnimatedSection delay={0.1}>
-              {t.about.story.split("\n\n").map((para, i) => (
+              {story.split("\n\n").map((para, i) => (
                 <p key={i} className="font-serif text-xl lg:text-2xl font-light text-dark-brown leading-relaxed mb-8">
                   {para}
                 </p>
@@ -87,13 +111,13 @@ export function AboutPageClient() {
           <div className="flex items-center gap-3">
             <span className="block w-8 h-px bg-warm-gray" />
             <span className="font-sans text-xs tracking-widest uppercase text-warm-gray">
-              {t.about.valuesHeading}
+              {valuesHeading}
             </span>
           </div>
         </AnimatedSection>
 
         <StaggerContainer staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-          {t.about.values.map((value, i) => (
+          {values.map((value, i) => (
             <StaggerItem key={i}>
               <div className="group">
                 {/* Number */}
@@ -118,10 +142,10 @@ export function AboutPageClient() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <AnimatedSection direction="left">
               <h2 className="font-serif text-4xl lg:text-5xl font-light text-dark-brown mb-4">
-                {t.about.contactHeading}
+                {contactHeading}
               </h2>
               <p className="font-sans text-sm text-warm-gray leading-relaxed mb-8 max-w-sm">
-                {t.about.contactBody}
+                {contactBody}
               </p>
               <Button
                 href="mailto:hej@stitchofcare.dk"
@@ -129,14 +153,14 @@ export function AboutPageClient() {
                 size="lg"
                 external
               >
-                {t.about.contactCta}
+                {contactCta}
               </Button>
             </AnimatedSection>
 
             <AnimatedSection direction="right" delay={0.1}>
               <div>
                 <p className="font-sans text-xs tracking-widest uppercase text-warm-gray mb-6">
-                  {t.about.followHeading}
+                  {followHeading}
                 </p>
                 <div className="space-y-4">
                   <a

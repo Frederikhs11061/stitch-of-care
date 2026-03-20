@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 interface LanguageToggleProps {
   className?: string;
-  variant?: "default" | "minimal";
+  variant?: "default" | "dark";
 }
 
 export function LanguageToggle({
@@ -15,6 +15,8 @@ export function LanguageToggle({
 }: LanguageToggleProps) {
   const { language, setLanguage } = useLanguage();
 
+  const isDark = variant === "dark";
+
   return (
     <div
       className={cn(
@@ -22,43 +24,39 @@ export function LanguageToggle({
         className
       )}
     >
-      <button
-        onClick={() => setLanguage("da")}
-        className={cn(
-          "relative px-1 py-0.5 transition-all duration-200",
-          language === "da"
-            ? "text-dark-brown font-medium"
-            : "text-warm-gray hover:text-dark-brown"
-        )}
-        aria-label="Skift til dansk"
-      >
-        DA
-        {language === "da" && (
-          <motion.span
-            layoutId="lang-indicator"
-            className="absolute bottom-0 left-0 right-0 h-px bg-dark-brown"
-          />
-        )}
-      </button>
-      <span className="text-sand text-xs">|</span>
-      <button
-        onClick={() => setLanguage("en")}
-        className={cn(
-          "relative px-1 py-0.5 transition-all duration-200",
-          language === "en"
-            ? "text-dark-brown font-medium"
-            : "text-warm-gray hover:text-dark-brown"
-        )}
-        aria-label="Switch to English"
-      >
-        EN
-        {language === "en" && (
-          <motion.span
-            layoutId="lang-indicator"
-            className="absolute bottom-0 left-0 right-0 h-px bg-dark-brown"
-          />
-        )}
-      </button>
+      {(["da", "en"] as const).map((lang, i) => (
+        <>
+          {i === 1 && (
+            <span key="sep" className={cn("text-xs", isDark ? "text-gold/30" : "text-sand")}>|</span>
+          )}
+          <button
+            key={lang}
+            onClick={() => setLanguage(lang)}
+            className={cn(
+              "relative px-1 py-0.5 transition-all duration-200",
+              isDark
+                ? language === lang
+                  ? "text-pale-gold font-medium"
+                  : "text-warm-gray/60 hover:text-pale-gold"
+                : language === lang
+                  ? "text-dark-brown font-medium"
+                  : "text-warm-gray hover:text-dark-brown"
+            )}
+            aria-label={lang === "da" ? "Skift til dansk" : "Switch to English"}
+          >
+            {lang.toUpperCase()}
+            {language === lang && (
+              <motion.span
+                layoutId="lang-indicator"
+                className={cn(
+                  "absolute bottom-0 left-0 right-0 h-px",
+                  isDark ? "bg-gold" : "bg-dark-brown"
+                )}
+              />
+            )}
+          </button>
+        </>
+      ))}
     </div>
   );
 }

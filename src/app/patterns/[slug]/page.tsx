@@ -2,118 +2,78 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { patterns, getPatternBySlug } from "@/data/patterns";
 import { PatternDetailClient } from "./PatternDetailClient";
+import { getSanityPatternBySlug, getSanityPatternSlugs } from "@/lib/sanity.queries";
+import { urlFor } from "@/lib/sanity";
 
-interface Props {
-  params: Promise<{ slug: string }>;
-}
+interface Props { params: Promise<{ slug: string }> }
 
 export async function generateStaticParams() {
-  return patterns.map((p) => ({ slug: p.slug }));
+  const [staticSlugs, sanitySlugs] = await Promise.all([
+    Promise.resolve(patterns.map((p) => ({ slug: p.slug }))),
+    getSanityPatternSlugs().catch(() => []),
+  ]);
+  const all = new Map<string, { slug: string }>();
+  [...staticSlugs, ...sanitySlugs].forEach((s) => all.set(s.slug, s));
+  return Array.from(all.values());
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const pattern = getPatternBySlug(slug);
-  if (!pattern) return {};
+  const [pattern, sanity] = await Promise.all([
+    Promise.resolve(getPatternBySlug(slug)),
+    getSanityPatternBySlug(slug).catch(() => null),
+  ]);
+  const p = sanity ?? pattern;
+  if (!p) return {};
 
-  const title = `${pattern.name} — Strikkeopskrift PDF`;
-  const description = `${pattern.description.da} ${pattern.pages} sider, ${pattern.sizes.length} størrelser. Øjeblikkelig PDF-download.`;
+  const title = sanity?.seo?.title ?? `${p.name} — Strikkeopskrift PDF`;
+  const description = sanity?.seo?.descriptionDa ?? `${p.description?.da ?? ""} ${p.pages} sider. Øjeblikkelig PDF-download.`;
   const url = `https://stitch-of-care.vercel.app/patterns/${slug}`;
+  const ogImageUrl = sanity?.seo?.ogImage
+    ? urlFor(sanity.seo.ogImage).width(1200).height(630).url()
+    : sanity?.images?.front?.asset?.url ?? pattern?.images?.front;
 
   return {
     title,
     description,
-    keywords: [
-      pattern.name,
-      "strikkeopskrift",
-      "sweater opskrift PDF",
-      pattern.yarnWeight + " garn",
-      "nordisk strik",
-      "strik opskrift download",
-    ],
     alternates: { canonical: url },
-    openGraph: {
-      title,
-      description,
-      url,
-      type: "website",
-      images: [
-        {
-          url: pattern.images.front,
-          width: 800,
-          height: 1067,
-          alt: pattern.name,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [pattern.images.front],
-    },
+    openGraph: { title, description, url, type: "website", images: ogImageUrl ? [{ url: ogImageUrl }] : [] },
+    twitter: { card: "summary_large_image", title, description, images: ogImageUrl ? [ogImageUrl] : [] },
   };
 }
 
 export default async function PatternDetailPage({ params }: Props) {
   const { slug } = await params;
-  const pattern = getPatternBySlug(slug);
-  if (!pattern) notFound();
+  const [pattern, sanityPattern] = await Promise.all([
+    Promise.resolve(getPatternBySlug(slug)),
+    getSanityPatternBySlug(slug).catch(() => null),
+  ]);
 
+  if (!pattern && !sanityPattern) notFound();
+
+  const p = sanityPattern ?? pattern!;
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: pattern.name,
-    description: pattern.description.da,
-    image: [pattern.images.front, pattern.images.back, pattern.images.lifestyle].filter(Boolean),
-    brand: {
-      "@type": "Brand",
-      name: "Stitch of Care",
-    },
+    name: p.name,
+    description: p.description?.da ?? "",
+    brand: { "@type": "Brand", name: "Stitch of Care" },
     offers: {
       "@type": "Offer",
       priceCurrency: "DKK",
-      price: pattern.price,
+      price: p.price,
       availability: "https://schema.org/InStock",
       url: `https://stitch-of-care.vercel.app/patterns/${slug}`,
-      seller: {
-        "@type": "Organization",
-        name: "Stitch of Care",
-      },
+      seller: { "@type": "Organization", name: "Stitch of Care" },
     },
-    additionalProperty: [
-      {
-        "@type": "PropertyValue",
-        name: "Format",
-        value: "Digital PDF",
-      },
-      {
-        "@type": "PropertyValue",
-        name: "Sider",
-        value: String(pattern.pages),
-      },
-      {
-        "@type": "PropertyValue",
-        name: "Størrelser",
-        value: pattern.sizes.join(", "),
-      },
-      {
-        "@type": "PropertyValue",
-        name: "Garnvægt",
-        value: pattern.yarnWeight,
-      },
-    ],
   };
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
-      />
-      <PatternDetailClient pattern={pattern} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
+      <PatternDetailClient pattern={pattern ?? sanityPattern} sanityPattern={sanityPattern} />
     </>
   );
 }
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";

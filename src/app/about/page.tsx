@@ -1,21 +1,26 @@
 import type { Metadata } from "next";
 import { AboutPageClient } from "./AboutPageClient";
+import { getAboutPage } from "@/lib/sanity.queries";
+import { urlFor } from "@/lib/sanity";
 
-export const metadata: Metadata = {
-  title: "Om Stitch of Care — Historien bag strikkeopskrifterne",
-  description:
-    "Mød designeren bag Stitch of Care. Nordiske strikkeopskrifter skabt med omhu, slow living og kærlighed til håndværket.",
-  alternates: {
-    canonical: "https://stitch-of-care.vercel.app/about",
-  },
-  openGraph: {
-    title: "Om Stitch of Care",
-    description: "Historien bag de nordiske strikkeopskrifter — skabt med omhu og kærlighed til håndværket.",
-    url: "https://stitch-of-care.vercel.app/about",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getAboutPage();
+  return {
+    title: page?.seo?.title ?? "Om Stitch of Care — Historien bag strikkeopskrifterne",
+    description: page?.seo?.description ?? "Mød designeren bag Stitch of Care. Nordiske strikkeopskrifter skabt med omhu.",
+    alternates: { canonical: "https://stitch-of-care.vercel.app/about" },
+    openGraph: {
+      title: page?.seo?.title ?? "Om Stitch of Care",
+      description: page?.seo?.description ?? "Historien bag de nordiske strikkeopskrifter.",
+      url: "https://stitch-of-care.vercel.app/about",
+      images: page?.seo?.ogImage ? [{ url: urlFor(page.seo.ogImage).width(1200).height(630).url() }] : [],
+    },
+  };
+}
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const pageData = await getAboutPage();
+
   const personSchema = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -23,21 +28,15 @@ export default function AboutPage() {
     url: "https://stitch-of-care.vercel.app/about",
     sameAs: ["https://instagram.com/stitchofcare"],
     jobTitle: "Knitwear Designer",
-    worksFor: {
-      "@type": "Organization",
-      name: "Stitch of Care",
-    },
+    worksFor: { "@type": "Organization", name: "Stitch of Care" },
   };
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
-      />
-      <AboutPageClient />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />
+      <AboutPageClient sanityData={pageData} />
     </>
   );
 }
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";

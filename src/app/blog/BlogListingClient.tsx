@@ -8,15 +8,47 @@ import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/ui/
 import { BlogPost } from "@/types/blog";
 import { formatDate } from "@/lib/utils";
 
-interface Props {
-  posts: BlogPost[];
+function loc(obj: { da?: string; en?: string } | null | undefined, lang: string, fallback: string) {
+  if (!obj) return fallback;
+  return (lang === "da" ? obj.da : obj.en) ?? fallback;
 }
 
-export function BlogListingClient({ posts }: Props) {
-  const { t, language } = useLanguage();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function toPost(sp: any): BlogPost {
+  return {
+    id: sp._id,
+    slug: sp.slug,
+    title: sp.title ?? { da: "", en: "" },
+    excerpt: sp.excerpt ?? { da: "", en: "" },
+    content: { da: "", en: "" },
+    coverImage: sp.coverImage?.asset?.url ?? "",
+    publishedAt: sp.publishedAt ?? "",
+    readingTime: sp.readingTime ?? 5,
+    tags: sp.tags ?? [],
+    category: sp.category ?? "",
+  };
+}
 
-  const featured = posts[0];
-  const rest = posts.slice(1);
+interface Props {
+  posts: BlogPost[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sanityPosts?: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sanityPageData?: any;
+}
+
+export function BlogListingClient({ posts, sanityPosts, sanityPageData }: Props) {
+  const { t, language } = useLanguage();
+  const s = sanityPageData;
+
+  const eyebrow = loc(s?.eyebrow, language, t.blog.eyebrow);
+  const heading = loc(s?.heading, language, t.blog.heading);
+
+  const displayPosts: BlogPost[] =
+    sanityPosts?.length ? sanityPosts.map(toPost) : posts;
+
+  const featured = displayPosts[0];
+  const rest = displayPosts.slice(1);
 
   return (
     <div className="min-h-screen bg-soft-white">
@@ -27,13 +59,13 @@ export function BlogListingClient({ posts }: Props) {
             <div className="flex items-center gap-3 mb-6">
               <span className="block w-8 h-px bg-warm-gray" />
               <span className="font-sans text-xs tracking-widest uppercase text-warm-gray">
-                {t.blog.eyebrow}
+                {eyebrow}
               </span>
             </div>
           </AnimatedSection>
           <AnimatedSection delay={0.1}>
             <h1 className="font-serif text-6xl lg:text-8xl font-light text-dark-brown">
-              {t.blog.heading}
+              {heading}
             </h1>
           </AnimatedSection>
         </div>

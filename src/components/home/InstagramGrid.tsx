@@ -11,17 +11,17 @@ export function InstagramGrid() {
   const { t } = useLanguage();
 
   return (
-    <section className="py-24 lg:py-32 bg-soft-white relative overflow-hidden">
-      <div className="absolute top-0 left-10 right-10 lg:left-20 lg:right-20 h-px bg-sand/50" />
+    <section className="py-24 lg:py-32 bg-cream relative overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sand/50 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
           <div>
             <AnimatedSection>
-              <div className="flex items-center gap-3 mb-4">
-                <span className="block w-8 h-px bg-warm-gray" />
-                <span className="font-sans text-xs tracking-widest uppercase text-warm-gray">
+              <div className="flex items-center gap-4 mb-5">
+                <span className="block w-10 h-px bg-dim-gold/60" />
+                <span className="font-sans text-[0.6rem] tracking-[0.3em] uppercase text-warm-gray">
                   {t.instagram.eyebrow}
                 </span>
               </div>
@@ -38,12 +38,12 @@ export function InstagramGrid() {
               href="https://instagram.com/stitchofcare"
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center gap-2 font-sans text-xs tracking-widest uppercase text-warm-gray hover:text-dark-brown transition-colors"
+              className="group flex items-center gap-2 font-sans text-[0.6rem] tracking-[0.25em] uppercase text-warm-gray hover:text-dark-brown transition-colors duration-300"
             >
-              <Instagram size={14} strokeWidth={1.5} />
+              <Instagram size={13} strokeWidth={1.5} />
               <span>{t.instagram.handle}</span>
               <ExternalLink
-                size={10}
+                size={9}
                 className="opacity-0 group-hover:opacity-100 transition-opacity"
               />
             </a>
@@ -54,22 +54,22 @@ export function InstagramGrid() {
         <StaggerContainer
           staggerDelay={0.06}
           containerDelay={0.1}
-          className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4"
+          className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3"
         >
-          {instagramPosts.map((post, i) => (
+          {instagramPosts.map((post) => (
             <StaggerItem key={post.id} direction="scale">
               <a
                 href={post.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative block aspect-square bg-cream overflow-hidden"
+                className="group relative block aspect-square bg-pale-sand overflow-hidden"
                 aria-label={post.alt}
               >
                 <Image
                   src={post.image}
                   alt={post.alt}
                   fill
-                  className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+                  className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105 opacity-80 group-hover:opacity-100"
                   sizes="(max-width: 768px) 50vw, 33vw"
                 />
                 {/* Hover overlay */}
@@ -77,14 +77,10 @@ export function InstagramGrid() {
                   initial={{ opacity: 0 }}
                   whileHover={{ opacity: 1 }}
                   transition={{ duration: 0.25 }}
-                  className="absolute inset-0 bg-dark-brown/50 flex flex-col items-center justify-center gap-2"
+                  className="absolute inset-0 bg-obsidian/60 flex flex-col items-center justify-center gap-2"
                 >
-                  <Heart
-                    size={20}
-                    strokeWidth={1.5}
-                    className="text-soft-white"
-                  />
-                  <span className="font-sans text-xs text-soft-white">
+                  <Heart size={18} strokeWidth={1.2} className="text-gold" />
+                  <span className="font-sans text-[0.6rem] tracking-widest text-pale-gold">
                     {post.likes}
                   </span>
                 </motion.div>
@@ -94,18 +90,21 @@ export function InstagramGrid() {
         </StaggerContainer>
 
         {/* CTA */}
-        <AnimatedSection delay={0.2} className="mt-10 text-center">
+        <AnimatedSection delay={0.2} className="mt-12 text-center">
           <a
             href="https://instagram.com/stitchofcare"
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 font-sans text-xs tracking-widest uppercase text-warm-gray border-b border-warm-gray/30 pb-0.5 hover:text-dark-brown hover:border-dark-brown transition-all duration-200"
+            className="group inline-flex items-center gap-3 font-sans text-[0.6rem] tracking-[0.28em] uppercase text-warm-gray hover:text-dark-brown transition-all duration-300"
           >
-            <Instagram size={12} strokeWidth={1.5} />
+            <Instagram size={11} strokeWidth={1.5} />
             {t.instagram.cta}
+            <span className="block w-0 h-px bg-gold transition-all duration-400 group-hover:w-6" />
           </a>
         </AnimatedSection>
       </div>
+
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sand/50 to-transparent" />
     </section>
   );
 }
