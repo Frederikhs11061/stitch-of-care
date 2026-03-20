@@ -3,7 +3,7 @@ import { Translations } from "./en";
 export const da: Translations = {
   nav: {
     patterns: "Opskrifter",
-    blog: "Journal",
+    blog: "Blog",
     faq: "FAQ",
     about: "Om mig",
     cart: "Kurv",
@@ -125,7 +125,7 @@ Jeg bor i Danmark med alt for meget garn og ikke nok opbevaring. The Broke Sweat
   },
   blog: {
     eyebrow: "Journalen",
-    heading: "Striknotes",
+    heading: "Strikkejournal",
     readMore: "Læs mere",
     readingTime: "min. læsetid",
     back: "Tilbage til journal",
@@ -149,7 +149,7 @@ Jeg bor i Danmark med alt for meget garn og ikke nok opbevaring. The Broke Sweat
     nav: {
       patterns: "Opskrifter",
       about: "Om mig",
-      blog: "Journal",
+      blog: "Blog",
       faq: "FAQ",
       contact: "Kontakt",
     },

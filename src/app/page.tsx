@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { HeroSection } from "@/components/home/HeroSection";
-import { MarqueeSection } from "@/components/home/MarqueeSection";
 import { FeaturedProduct } from "@/components/home/FeaturedProduct";
 import { AboutTeaser } from "@/components/home/AboutTeaser";
 import { InstagramGrid } from "@/components/home/InstagramGrid";
@@ -33,7 +32,6 @@ export default function HomePage() {
         Stitch of Care — Nordiske Strikkeopskrifter med Omtanke
       </h1>
       <HeroSection />
-      <MarqueeSection />
       {featured && <FeaturedProduct pattern={featured} />}
       <AboutTeaser />
       <NewsletterSection />

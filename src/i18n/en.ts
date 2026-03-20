@@ -1,7 +1,7 @@
 export const en = {
   nav: {
     patterns: "Patterns",
-    blog: "Journal",
+    blog: "Blog",
     faq: "FAQ",
     about: "About",
     cart: "Cart",
@@ -123,7 +123,7 @@ I live in Denmark with too much yarn and not enough storage. The Broke Sweater w
   },
   blog: {
     eyebrow: "The journal",
-    heading: "Knitting notes",
+    heading: "Knitting journal",
     readMore: "Read more",
     readingTime: "min read",
     back: "Back to journal",
@@ -147,7 +147,7 @@ I live in Denmark with too much yarn and not enough storage. The Broke Sweater w
     nav: {
       patterns: "Patterns",
       about: "About",
-      blog: "Journal",
+      blog: "Blog",
       faq: "FAQ",
       contact: "Contact",
     },

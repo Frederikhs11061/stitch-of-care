@@ -44,11 +44,10 @@ export function FeaturedProduct({ pattern }: FeaturedProductProps) {
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         {/* Section label */}
         <AnimatedSection className="flex items-center gap-4 mb-16">
-          <span className="block w-10 h-px bg-dim-gold/60" />
-          <span className="font-sans text-[0.6rem] tracking-[0.3em] uppercase text-dark-brown/50">
+          <span className="block w-10 h-px bg-warm-gray/60" />
+          <span className="font-sans text-xs tracking-[0.28em] uppercase text-warm-gray">
             {t.featuredProduct.eyebrow}
           </span>
-          <span className="block w-10 h-px bg-dim-gold/60" />
         </AnimatedSection>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
