@@ -274,7 +274,7 @@ export async function POST(req: Request) {
   const firstName = customerName ? customerName.split(" ")[0] : "";
 
   await resend.emails.send({
-    from: "Stitch of Care <onboarding@resend.dev>",
+    from: "Stitch of Care <hej@konvertio.dk>",
     to: customerEmail,
     subject: "Din Stitch of Care opskrift ✦",
     attachments: attachments.map((a) => ({
@@ -302,7 +302,7 @@ export async function POST(req: Request) {
 
   // Notify store
   await resend.emails.send({
-    from: "Stitch of Care <onboarding@resend.dev>",
+    from: "Stitch of Care <hej@konvertio.dk>",
     to: "hej@stitchofcare.dk",
     subject: `Nyt salg: ${patternNames.join(", ")} — ${customerEmail}`,
     html: `
