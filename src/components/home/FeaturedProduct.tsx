@@ -37,7 +37,7 @@ export function FeaturedProduct({ pattern }: FeaturedProductProps) {
   }
 
   return (
-    <section className="relative py-24 lg:py-32 bg-cream overflow-hidden">
+    <section className="relative py-12 lg:py-16 bg-cream overflow-hidden">
       {/* Top border */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sand/60 to-transparent" />
 

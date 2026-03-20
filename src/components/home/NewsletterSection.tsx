@@ -22,7 +22,7 @@ export function NewsletterSection() {
   }
 
   return (
-    <section className="py-24 lg:py-36 bg-pale-sand relative overflow-hidden">
+    <section className="py-12 lg:py-18 bg-pale-sand relative overflow-hidden">
       {/* Large decorative serif letter */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
         <span className="font-serif font-light text-[18vw] text-dark-brown/[0.04] whitespace-nowrap leading-none">
@@ -82,20 +82,20 @@ export function NewsletterSection() {
               <motion.form
                 key="form"
                 onSubmit={handleSubmit}
-                className="resend-form flex flex-col sm:flex-row gap-0 max-w-md mx-auto"
+                className="resend-form flex gap-0 max-w-lg mx-auto"
               >
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t.newsletter.placeholder}
-                  className="flex-1 h-12 px-5 bg-soft-white border border-sand text-dark-brown font-sans text-sm placeholder:text-warm-gray/60 focus:outline-none focus:border-dark-brown/40 transition-colors duration-300"
+                  className="flex-1 h-14 px-5 bg-soft-white border border-sand text-dark-brown font-sans text-sm placeholder:text-warm-gray/60 focus:outline-none focus:border-dark-brown/40 transition-colors duration-300"
                   required
                 />
                 <button
                   type="submit"
                   disabled={status === "loading"}
-                  className="h-12 px-7 bg-dark-brown text-cream font-sans text-[0.65rem] tracking-[0.22em] uppercase font-medium hover:bg-deep-brown transition-colors duration-300 disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="h-14 px-8 bg-dark-brown text-cream font-sans text-[0.65rem] tracking-[0.22em] uppercase font-medium hover:bg-deep-brown transition-colors duration-300 disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
                 >
                   {status === "loading" ? (
                     <span className="w-3.5 h-3.5 border-2 border-obsidian border-t-transparent rounded-full animate-spin" />

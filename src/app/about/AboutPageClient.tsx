@@ -13,7 +13,7 @@ export function AboutPageClient() {
     <div className="min-h-screen bg-soft-white">
       {/* Hero */}
       <div className="bg-cream border-b border-sand/40">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-36 pb-20">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-24 pb-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-end">
             <div>
               <AnimatedSection direction="down">

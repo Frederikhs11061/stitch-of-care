@@ -16,7 +16,7 @@ export function PatternsPageClient({ patterns }: Props) {
     <div className="min-h-screen bg-soft-white">
       {/* Page header */}
       <div className="border-b border-sand/40 bg-cream">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-36 pb-16">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-24 pb-16">
           <AnimatedSection direction="down">
             <div className="flex items-center gap-3 mb-6">
               <span className="block w-8 h-px bg-warm-gray" />

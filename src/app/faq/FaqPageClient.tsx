@@ -10,7 +10,7 @@ import { faqItems } from "@/data/faqData";
 
 export function FaqPageClient() {
   const { t, language } = useLanguage();
-  const [openId, setOpenId] = useState<string | null>(faqItems[0]?.id ?? null);
+  const [openId, setOpenId] = useState<string | null>(null);
 
   function toggle(id: string) {
     setOpenId((prev) => (prev === id ? null : id));
@@ -20,7 +20,7 @@ export function FaqPageClient() {
     <div className="min-h-screen bg-soft-white">
       {/* Page header */}
       <div className="bg-cream border-b border-sand/40">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-36 pb-16">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-24 pb-16">
           <AnimatedSection direction="down">
             <div className="flex items-center gap-3 mb-6">
               <span className="block w-8 h-px bg-warm-gray" />
