@@ -33,39 +33,42 @@ function Overlay({
   large?: boolean;
 }) {
   return (
-    <div className={`absolute bottom-0 left-0 right-0 ${large ? "p-6 lg:p-9" : "p-3.5 lg:p-5"}`}>
+    <div className={`absolute bottom-0 left-0 right-0 ${large ? "p-6 lg:p-9" : "p-4 lg:p-5"}`}>
+      {/* Eyebrow */}
       <p
-        className={`font-sans tracking-[0.28em] uppercase text-pale-gold/75 mb-1.5 ${
-          large ? "text-[0.6rem] lg:text-[0.65rem]" : "text-[0.55rem] lg:text-[0.6rem]"
+        className={`font-sans tracking-[0.25em] uppercase text-white/70 mb-2 ${
+          large ? "text-[0.65rem] lg:text-[0.7rem]" : "text-[0.6rem] lg:text-[0.65rem]"
         }`}
       >
         {eyebrow}
       </p>
 
+      {/* Title */}
       <p
-        className={`font-serif font-light text-soft-white leading-[0.9] ${
+        className={`font-serif font-light text-white leading-[0.92] ${
           large
-            ? "text-[clamp(2rem,5vw,4rem)]"
-            : "text-[clamp(1.1rem,2.5vw,1.5rem)]"
+            ? "text-[clamp(2.2rem,5vw,4.2rem)]"
+            : "text-[clamp(1.25rem,3vw,1.6rem)]"
         }`}
       >
         {title}
       </p>
 
+      {/* CTA */}
       {cta && (
         <motion.div
           initial={{ opacity: 0, x: -8 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 1.4, duration: 0.7, ease: EXPO }}
-          className="mt-3 lg:mt-5 flex items-center gap-2 group/cta"
+          className="mt-4 lg:mt-5 flex items-center gap-2 group/cta"
         >
-          <span className="font-sans text-[0.6rem] lg:text-[0.65rem] tracking-[0.28em] uppercase text-pale-gold/80 group-hover/cta:text-pale-gold transition-colors duration-300">
+          <span className="font-sans text-[0.65rem] tracking-[0.28em] uppercase text-white/75 group-hover/cta:text-white transition-colors duration-300">
             {cta}
           </span>
           <ArrowRight
-            size={9}
+            size={10}
             strokeWidth={1.5}
-            className="text-pale-gold/65 group-hover/cta:text-pale-gold group-hover/cta:translate-x-0.5 transition-all duration-300"
+            className="text-white/75 group-hover/cta:text-white group-hover/cta:translate-x-0.5 transition-all duration-300"
           />
         </motion.div>
       )}
@@ -151,7 +154,7 @@ export function HeroSection() {
             </motion.div>
 
             {/* Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-obsidian/95 via-obsidian/40 to-obsidian/5" />
 
             {/* New badge */}
             <motion.div
@@ -160,7 +163,7 @@ export function HeroSection() {
               transition={{ delay: 1.1, duration: 0.8, ease: EXPO }}
               className="absolute top-5 left-5 lg:top-7 lg:left-7"
             >
-              <span className="inline-block font-sans text-[0.5rem] lg:text-[0.55rem] tracking-[0.28em] uppercase bg-dark-brown text-pale-gold px-3 py-2">
+              <span className="inline-block font-sans text-[0.6rem] lg:text-[0.65rem] tracking-[0.25em] uppercase bg-soft-white text-dark-brown px-3 py-2">
                 {isDA ? "Ny opskrift" : "New pattern"}
               </span>
             </motion.div>
@@ -197,7 +200,7 @@ export function HeroSection() {
                 sizes="(max-width: 1024px) 50vw, 37vw"
               />
               {/* Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-obsidian/85 via-obsidian/15 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-obsidian/95 via-obsidian/50 to-obsidian/5" />
               {/* Hover gleam */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-br from-pale-gold/6 to-transparent transition-opacity duration-500" />
               <Overlay eyebrow={tile.eyebrow} title={tile.title} />
