@@ -110,19 +110,22 @@ export function HeroSection() {
   ];
 
   return (
-    <section aria-label="Hero" className="bg-obsidian" style={{ paddingTop: "72px" }}>
+    <section aria-label="Hero" className="bg-soft-white" style={{ paddingTop: "72px" }}>
+
+      {/* ── Padded wrapper ────────────────────────────── */}
+      <div className="px-3 md:px-5 lg:px-6 pt-3 pb-4 lg:pb-6">
 
       {/* ── Grid ──────────────────────────────────────── */}
       <div
         ref={heroRef}
         className="
-          grid gap-px
+          grid gap-1.5 lg:gap-2
           grid-cols-2
           lg:grid-cols-[63fr_37fr]
           lg:grid-rows-[repeat(3,1fr)]
-          lg:h-[calc(100svh-72px)]
-          lg:max-h-[960px]
-          lg:min-h-[520px]
+          lg:h-[calc(100svh-120px)]
+          lg:max-h-[880px]
+          lg:min-h-[500px]
         "
       >
 
@@ -157,7 +160,7 @@ export function HeroSection() {
               transition={{ delay: 1.1, duration: 0.8, ease: EXPO }}
               className="absolute top-5 left-5 lg:top-7 lg:left-7"
             >
-              <span className="inline-block font-sans text-[0.45rem] lg:text-[0.48rem] tracking-[0.3em] uppercase bg-dark-brown/60 backdrop-blur-sm text-pale-gold/80 px-3 py-1.5 border border-pale-gold/10">
+              <span className="inline-block font-sans text-[0.5rem] lg:text-[0.55rem] tracking-[0.28em] uppercase bg-dark-brown text-pale-gold px-3 py-2">
                 {isDA ? "Ny opskrift" : "New pattern"}
               </span>
             </motion.div>
@@ -204,19 +207,7 @@ export function HeroSection() {
 
       </div>
 
-      {/* ── Subtle scroll rule ────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.0, duration: 1 }}
-        className="hidden lg:flex items-center justify-center gap-3 py-3 bg-obsidian"
-      >
-        <span className="block w-8 h-px bg-sand/25" />
-        <span className="font-sans text-[0.45rem] tracking-[0.35em] uppercase text-warm-gray/35">
-          {t.hero.scrollHint}
-        </span>
-        <span className="block w-8 h-px bg-sand/25" />
-      </motion.div>
+      </div>{/* end padded wrapper */}
 
     </section>
   );
