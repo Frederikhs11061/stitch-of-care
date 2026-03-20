@@ -71,6 +71,7 @@ export const patternType = defineType({
       ],
     }),
     defineField({ name: "tags", title: "Tags", type: "array", of: [{ type: "string" }] }),
+    defineField({ name: "pdfFile", title: "PDF (opskrift)", type: "file", options: { accept: ".pdf" } }),
     defineField({
       name: "seo",
       title: "SEO",

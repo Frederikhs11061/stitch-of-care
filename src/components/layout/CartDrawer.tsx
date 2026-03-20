@@ -8,11 +8,30 @@ import { useCart } from "@/context/CartContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 export function CartDrawer() {
   const { isOpen, closeCart, items, removeItem, updateQuantity, total, itemCount } =
     useCart();
   const { t, language } = useLanguage();
+  const [checkingOut, setCheckingOut] = useState(false);
+
+  async function handleCheckout() {
+    setCheckingOut(true);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch {
+      setCheckingOut(false);
+    }
+  }
 
   const formattedTotal =
     language === "da" ? `${total} kr.` : `€${Math.round(total / 7.5)}`;
@@ -183,13 +202,15 @@ export function CartDrawer() {
                   variant="primary"
                   size="lg"
                   className="w-full"
-                  icon={<ArrowRight size={14} strokeWidth={2} />}
-                  onClick={() => {
-                    // TODO: connect Stripe
-                    alert("Stripe integration coming soon!");
-                  }}
+                  icon={checkingOut ? undefined : <ArrowRight size={14} strokeWidth={2} />}
+                  onClick={handleCheckout}
+                  disabled={checkingOut}
                 >
-                  {t.cart.checkout}
+                  {checkingOut ? (
+                    <span className="w-3.5 h-3.5 border-2 border-cream border-t-transparent rounded-full animate-spin inline-block" />
+                  ) : (
+                    t.cart.checkout
+                  )}
                 </Button>
               </div>
             )}
