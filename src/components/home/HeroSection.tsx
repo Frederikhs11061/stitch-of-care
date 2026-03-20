@@ -1,137 +1,223 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowDown } from "lucide-react";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-import { Button } from "@/components/ui/Button";
 
-const container = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.12, delayChildren: 0.3 },
-  },
-};
+/* ── Easing ─────────────────────────────────────────── */
+const EXPO = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
-const item = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
+/* ── Tile entrance variants ─────────────────────────── */
+const tileIn = {
+  hidden: { opacity: 0, y: 28 },
+  visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
+    transition: { duration: 1.05, delay: i * 0.1, ease: EXPO },
+  }),
 };
 
+/* ── Text overlay ───────────────────────────────────── */
+function Overlay({
+  eyebrow,
+  title,
+  cta,
+  large = false,
+}: {
+  eyebrow: string;
+  title: string;
+  cta?: string;
+  large?: boolean;
+}) {
+  return (
+    <div className={`absolute bottom-0 left-0 right-0 ${large ? "p-6 lg:p-9" : "p-3.5 lg:p-5"}`}>
+      <p
+        className={`font-sans tracking-[0.28em] uppercase text-pale-gold/75 mb-1.5 ${
+          large ? "text-[0.5rem] lg:text-[0.58rem]" : "text-[0.45rem] lg:text-[0.5rem]"
+        }`}
+      >
+        {eyebrow}
+      </p>
+
+      <p
+        className={`font-serif font-light text-soft-white leading-[0.9] ${
+          large
+            ? "text-[clamp(1.75rem,4.5vw,3.8rem)]"
+            : "text-[clamp(0.95rem,2.2vw,1.35rem)]"
+        }`}
+      >
+        {title}
+      </p>
+
+      {cta && (
+        <motion.div
+          initial={{ opacity: 0, x: -8 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 1.4, duration: 0.7, ease: EXPO }}
+          className="mt-3 lg:mt-5 flex items-center gap-2 group/cta"
+        >
+          <span className="font-sans text-[0.5rem] lg:text-[0.55rem] tracking-[0.28em] uppercase text-pale-gold/65 group-hover/cta:text-pale-gold transition-colors duration-300">
+            {cta}
+          </span>
+          <ArrowRight
+            size={9}
+            strokeWidth={1.5}
+            className="text-pale-gold/65 group-hover/cta:text-pale-gold group-hover/cta:translate-x-0.5 transition-all duration-300"
+          />
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
+/* ── HeroSection ────────────────────────────────────── */
 export function HeroSection() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isDA = language === "da";
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const mainImgY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
+
+  const smallTiles = [
+    {
+      image: "https://images.unsplash.com/photo-1609743522653-52354461eb27?w=800&q=85",
+      eyebrow: isDA ? "Opskrift detaljer" : "Pattern details",
+      title: isDA ? "14 sider · 7 størrelser" : "14 pages · 7 sizes",
+      href: "/patterns/broke-sweater",
+      mobileVisible: true,
+    },
+    {
+      image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=85",
+      eyebrow: isDA ? "Om designeren" : "About the designer",
+      title: isDA ? "Strikket med omtanke" : "Knitted with care",
+      href: "/about",
+      mobileVisible: true,
+    },
+    {
+      image: "https://images.unsplash.com/photo-1544717684-1243da23b545?w=800&q=85",
+      eyebrow: isDA ? "Digital PDF" : "Digital PDF",
+      title: isDA ? "Øjeblikkelig download" : "Instant download",
+      href: "/patterns",
+      mobileVisible: false,
+    },
+  ];
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-soft-white">
-      {/* Subtle background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cream via-soft-white to-soft-white pointer-events-none" />
+    <section aria-label="Hero" className="bg-obsidian" style={{ paddingTop: "72px" }}>
 
-      {/* Large decorative number / year — Nordic editorial touch */}
-      <div className="absolute top-1/2 right-[-2vw] -translate-y-1/2 pointer-events-none select-none hidden lg:block">
-        <motion.span
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 0.04, x: 0 }}
-          transition={{ duration: 1.2, delay: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
-          className="font-serif font-bold text-[20vw] leading-none text-dark-brown writing-mode-vertical"
-          style={{ writingMode: "vertical-rl" }}
-        >
-          2025
-        </motion.span>
-      </div>
+      {/* ── Grid ──────────────────────────────────────── */}
+      <div
+        ref={heroRef}
+        className="
+          grid gap-px
+          grid-cols-2
+          lg:grid-cols-[63fr_37fr]
+          lg:grid-rows-[repeat(3,1fr)]
+          lg:h-[calc(100svh-72px)]
+          lg:max-h-[960px]
+          lg:min-h-[520px]
+        "
+      >
 
-      {/* Horizontal rule top */}
-      <motion.div
-        initial={{ scaleX: 0, opacity: 0 }}
-        animate={{ scaleX: 1, opacity: 1 }}
-        transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
-        style={{ transformOrigin: "left" }}
-        className="absolute top-24 left-0 right-0 h-px bg-sand/50 mx-10 lg:mx-20"
-      />
-
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-10 pt-32 pb-24">
+        {/* ── Large tile ────────────────────────────────── */}
         <motion.div
-          variants={container}
+          custom={0}
+          variants={tileIn}
           initial="hidden"
           animate="visible"
-          className="max-w-4xl"
+          className="relative col-span-2 lg:col-span-1 lg:row-span-3 overflow-hidden aspect-[4/5] lg:aspect-auto lg:h-full"
         >
-          {/* Eyebrow */}
-          <motion.div variants={item} className="flex items-center gap-3 mb-8">
-            <span className="block w-8 h-px bg-warm-gray" />
-            <span className="font-sans text-xs tracking-widest uppercase text-warm-gray">
-              {t.hero.eyebrow}
-            </span>
-          </motion.div>
+          <Link href="/patterns/broke-sweater" className="absolute inset-0 group">
+            {/* Parallax */}
+            <motion.div style={{ y: mainImgY }} className="absolute inset-0">
+              <Image
+                src="https://images.unsplash.com/photo-1576871337622-98d48d1cf531?w=1400&q=85"
+                alt="The Broke Sweater"
+                fill
+                priority
+                className="object-cover transition-transform duration-[1600ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
+                sizes="(max-width: 1024px) 100vw, 63vw"
+              />
+            </motion.div>
 
-          {/* Main heading — large, editorial */}
-          <div className="overflow-hidden mb-2">
-            <motion.h1
-              variants={item}
-              className="font-serif text-[13vw] md:text-[10vw] lg:text-[8.5vw] xl:text-[7.5vw] font-light leading-[0.9] text-dark-brown"
-            >
-              {t.hero.heading1}
-            </motion.h1>
-          </div>
-          <div className="overflow-hidden mb-10 ml-[6vw] md:ml-[8vw]">
-            <motion.h1
-              variants={item}
-              className="font-serif text-[13vw] md:text-[10vw] lg:text-[8.5vw] xl:text-[7.5vw] font-light leading-[0.9] text-dark-brown italic"
-            >
-              {t.hero.heading2}
-            </motion.h1>
-          </div>
+            {/* Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-obsidian/80 via-obsidian/10 to-transparent" />
 
-          {/* Tagline + CTA row */}
-          <motion.div
-            variants={item}
-            className="flex flex-col sm:flex-row items-start sm:items-center gap-8"
-          >
-            <p className="font-sans text-sm text-warm-gray max-w-xs leading-relaxed">
-              {t.hero.tagline}
-            </p>
-            <div className="flex items-center gap-4">
-              <Button href="/patterns" variant="primary" size="lg">
-                {t.hero.cta}
-              </Button>
-              <Button href="/about" variant="ghost" size="lg">
-                {t.hero.ctaSecondary}
-              </Button>
-            </div>
-          </motion.div>
+            {/* New badge */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1, duration: 0.8, ease: EXPO }}
+              className="absolute top-5 left-5 lg:top-7 lg:left-7"
+            >
+              <span className="inline-block font-sans text-[0.45rem] lg:text-[0.48rem] tracking-[0.3em] uppercase bg-dark-brown/60 backdrop-blur-sm text-pale-gold/80 px-3 py-1.5 border border-pale-gold/10">
+                {isDA ? "Ny opskrift" : "New pattern"}
+              </span>
+            </motion.div>
+
+            <Overlay
+              eyebrow="Stitch of Care — 2025"
+              title="The Broke Sweater"
+              cta={isDA ? "Se opskrift" : "View pattern"}
+              large
+            />
+          </Link>
         </motion.div>
 
-        {/* Bottom scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.8, duration: 0.8 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        >
-          <span className="font-sans text-2xs tracking-widest uppercase text-warm-gray/60">
-            {t.hero.scrollHint}
-          </span>
+        {/* ── Small tiles ───────────────────────────────── */}
+        {smallTiles.map((tile, i) => (
           <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            key={i}
+            custom={i + 1}
+            variants={tileIn}
+            initial="hidden"
+            animate="visible"
+            className={[
+              "relative overflow-hidden",
+              "aspect-[4/3] lg:aspect-auto lg:h-full",
+              !tile.mobileVisible ? "hidden lg:block" : "",
+            ].join(" ")}
           >
-            <ArrowDown size={14} strokeWidth={1.5} className="text-warm-gray/60" />
+            <Link href={tile.href} className="absolute inset-0 group">
+              <Image
+                src={tile.image}
+                alt={tile.title}
+                fill
+                className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+                sizes="(max-width: 1024px) 50vw, 37vw"
+              />
+              {/* Gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-obsidian/75 via-obsidian/10 to-transparent" />
+              {/* Hover gleam */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-br from-pale-gold/6 to-transparent transition-opacity duration-500" />
+              <Overlay eyebrow={tile.eyebrow} title={tile.title} />
+            </Link>
           </motion.div>
-        </motion.div>
+        ))}
+
       </div>
 
-      {/* Bottom rule */}
+      {/* ── Subtle scroll rule ────────────────────────── */}
       <motion.div
-        initial={{ scaleX: 0, opacity: 0 }}
-        animate={{ scaleX: 1, opacity: 1 }}
-        transition={{ duration: 1.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
-        style={{ transformOrigin: "right" }}
-        className="absolute bottom-0 left-0 right-0 h-px bg-sand/50 mx-10 lg:mx-20"
-      />
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2.0, duration: 1 }}
+        className="hidden lg:flex items-center justify-center gap-3 py-3 bg-obsidian"
+      >
+        <span className="block w-8 h-px bg-sand/25" />
+        <span className="font-sans text-[0.45rem] tracking-[0.35em] uppercase text-warm-gray/35">
+          {t.hero.scrollHint}
+        </span>
+        <span className="block w-8 h-px bg-sand/25" />
+      </motion.div>
+
     </section>
   );
 }
