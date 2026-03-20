@@ -18,6 +18,7 @@ export default defineConfig({
   title: "Stitch of Care",
   projectId: "xfq0ct3d",
   dataset: "production",
+  basePath: "/studio",
   plugins: [
     structureTool({
       structure: (S) =>
