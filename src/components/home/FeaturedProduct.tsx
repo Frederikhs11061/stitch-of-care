@@ -207,7 +207,7 @@ export function FeaturedProduct({ pattern }: FeaturedProductProps) {
                   <motion.button
                     onClick={handleAddToCart}
                     whileTap={{ scale: 0.97 }}
-                    className={`flex-1 h-16 sm:h-12 flex items-center justify-center gap-2 font-sans text-sm sm:text-[0.65rem] tracking-[0.22em] uppercase transition-all duration-300 ${
+                    className={`w-full sm:flex-1 h-16 sm:h-12 flex items-center justify-center gap-2 font-sans text-sm sm:text-[0.65rem] tracking-[0.22em] uppercase transition-all duration-300 ${
                       added || isInCart
                         ? "bg-dark-brown/70 text-cream"
                         : "bg-dark-brown text-cream hover:bg-deep-brown"
