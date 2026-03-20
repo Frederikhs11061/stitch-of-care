@@ -115,8 +115,8 @@ export function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-5">
-            <LanguageToggle className="hidden lg:flex" variant="dark" />
-            <CartIcon variant="dark" />
+            <LanguageToggle className="hidden lg:flex" />
+            <CartIcon />
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden w-10 h-10 flex items-center justify-center text-warm-gray hover:text-dark-brown transition-colors duration-300"
