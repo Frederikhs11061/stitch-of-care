@@ -11,9 +11,13 @@ import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/ui/
 import { Button } from "@/components/ui/Button";
 import { Pattern } from "@/types/pattern";
 import { formatPrice } from "@/lib/utils";
+import { urlFor } from "@/lib/sanity";
 
-function sanityImgUrl(img: { asset?: { url?: string } } | null | undefined): string | undefined {
-  return img?.asset?.url || undefined;
+function sanityImgUrl(img: unknown, width = 900): string | undefined {
+  if (img && (img as { asset?: unknown }).asset) {
+    return urlFor(img).width(width).quality(85).auto("format").url();
+  }
+  return undefined;
 }
 
 interface Props {
@@ -43,10 +47,10 @@ export function PatternDetailClient({ pattern, sanityPattern }: Props) {
   const pages = sp?.pages ?? pattern.pages;
   const sizes = sp?.sizes ?? pattern.sizes ?? [];
 
-  const frontImg = sanityImgUrl(sp?.images?.front) ?? pattern.images?.front ?? "";
-  const backImg = sanityImgUrl(sp?.images?.back) ?? pattern.images?.back;
-  const detailImg = sanityImgUrl(sp?.images?.detail) ?? pattern.images?.detail;
-  const lifestyleImg = sanityImgUrl(sp?.images?.lifestyle) ?? pattern.images?.lifestyle;
+  const frontImg = sanityImgUrl(sp?.images?.front, 1000) ?? pattern.images?.front ?? "";
+  const backImg = sanityImgUrl(sp?.images?.back, 1000) ?? pattern.images?.back;
+  const detailImg = sanityImgUrl(sp?.images?.detail, 1000) ?? pattern.images?.detail;
+  const lifestyleImg = sanityImgUrl(sp?.images?.lifestyle, 1000) ?? pattern.images?.lifestyle;
   const frontAlt = sp?.images?.frontAlt?.[language] ?? name;
   const backAlt = sp?.images?.backAlt?.[language] ?? (backText ? `"${backText}"` : name);
 

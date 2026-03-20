@@ -4,6 +4,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/ui/AnimatedSection";
 import { PatternCard } from "@/components/patterns/PatternCard";
 import { Pattern } from "@/types/pattern";
+import { urlFor } from "@/lib/sanity";
 
 function loc(obj: { da?: string; en?: string } | null | undefined, lang: string, fallback: string) {
   if (!obj) return fallback;
@@ -26,10 +27,10 @@ function toPattern(sp: any): Pattern {
     pages: sp.pages ?? 0,
     sizes: sp.sizes ?? [],
     images: {
-      front: sp.images?.front?.asset?.url ?? "",
-      back: sp.images?.back?.asset?.url || undefined,
-      detail: sp.images?.detail?.asset?.url || undefined,
-      lifestyle: sp.images?.lifestyle?.asset?.url || undefined,
+      front: sp.images?.front?.asset ? urlFor(sp.images.front).width(600).quality(85).auto("format").url() : "",
+      back: sp.images?.back?.asset ? urlFor(sp.images.back).width(600).quality(85).auto("format").url() : undefined,
+      detail: sp.images?.detail?.asset ? urlFor(sp.images.detail).width(600).quality(85).auto("format").url() : undefined,
+      lifestyle: sp.images?.lifestyle?.asset ? urlFor(sp.images.lifestyle).width(600).quality(85).auto("format").url() : undefined,
     },
     tags: sp.tags ?? [],
     featured: sp.featured ?? false,

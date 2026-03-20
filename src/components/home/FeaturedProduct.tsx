@@ -10,9 +10,13 @@ import { useCart } from "@/context/CartContext";
 import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/ui/AnimatedSection";
 import { Pattern } from "@/types/pattern";
 import { formatPrice } from "@/lib/utils";
+import { urlFor } from "@/lib/sanity";
 
-function sanityImgUrl(img: { asset?: { url?: string } } | null | undefined, fallback: string): string {
-  return img?.asset?.url ?? fallback;
+function sanityImgUrl(img: unknown, fallback: string, width = 900): string {
+  if (img && (img as { asset?: unknown }).asset) {
+    return urlFor(img).width(width).quality(85).auto("format").url();
+  }
+  return fallback;
 }
 
 interface FeaturedProductProps {
@@ -42,7 +46,7 @@ export function FeaturedProduct({ pattern, sanityPattern }: FeaturedProductProps
   const pages = sp?.pages ?? pattern.pages;
   const sizes = sp?.sizes ?? pattern.sizes;
   const frontImg = sanityImgUrl(sp?.images?.front, pattern.images.front);
-  const backImg = sp?.images?.back?.asset?.url ?? pattern.images.back ?? pattern.images.front;
+  const backImg = sanityImgUrl(sp?.images?.back, pattern.images.back ?? pattern.images.front);
   const frontAlt = sp?.images?.frontAlt?.[language] ?? name;
   const backAlt = sp?.images?.backAlt?.[language] ?? (backText ? `${name} – "${backText}"` : name);
 
@@ -114,7 +118,7 @@ export function FeaturedProduct({ pattern, sanityPattern }: FeaturedProductProps
               )}
             </div>
 
-            {(sp?.images?.back?.asset?.url || pattern.images.back) && (
+            {(sp?.images?.back?.asset || pattern.images.back) && (
               <div className="flex gap-3 mt-4">
                 {(["front", "back"] as const).map((view) => (
                   <button

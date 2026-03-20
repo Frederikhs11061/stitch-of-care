@@ -7,6 +7,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/ui/AnimatedSection";
 import { BlogPost } from "@/types/blog";
 import { formatDate } from "@/lib/utils";
+import { urlFor } from "@/lib/sanity";
 
 function loc(obj: { da?: string; en?: string } | null | undefined, lang: string, fallback: string) {
   if (!obj) return fallback;
@@ -15,13 +16,16 @@ function loc(obj: { da?: string; en?: string } | null | undefined, lang: string,
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function toPost(sp: any): BlogPost {
+  const coverImage = sp.coverImage?.asset
+    ? urlFor(sp.coverImage).width(900).quality(85).auto("format").url()
+    : "";
   return {
     id: sp._id,
     slug: sp.slug,
     title: sp.title ?? { da: "", en: "" },
     excerpt: sp.excerpt ?? { da: "", en: "" },
     content: { da: "", en: "" },
-    coverImage: sp.coverImage?.asset?.url ?? "",
+    coverImage,
     publishedAt: sp.publishedAt ?? "",
     readingTime: sp.readingTime ?? 5,
     tags: sp.tags ?? [],

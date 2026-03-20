@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { PortableText } from "@portabletext/react";
+import { urlFor } from "@/lib/sanity";
 import { useLanguage } from "@/context/LanguageContext";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { BlogPost } from "@/types/blog";
@@ -22,7 +23,9 @@ export function BlogPostClient({ post, sanityPost }: Props) {
 
   const sp = sanityPost;
   const title = sp?.title?.[language] ?? post?.title?.[language] ?? post?.title ?? "";
-  const coverImageSrc = sp?.coverImage?.asset?.url ?? (typeof post?.coverImage === "string" ? post.coverImage : "");
+  const coverImageSrc = sp?.coverImage?.asset
+    ? urlFor(sp.coverImage).width(1400).quality(85).auto("format").url()
+    : (typeof post?.coverImage === "string" ? post.coverImage : "");
   const coverImageAlt = sp?.coverImageAlt?.[language] ?? title;
   const category = sp?.category ?? post?.category ?? "";
   const publishedAt = sp?.publishedAt ?? post?.publishedAt ?? "";
