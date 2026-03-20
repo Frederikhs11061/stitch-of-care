@@ -117,7 +117,7 @@ export function AboutPageClient({ sanityData }: { sanityData?: any }) {
         </AnimatedSection>
 
         <StaggerContainer staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-          {values.map((value, i) => (
+          {values.map((value: { title: string; body: string }, i: number) => (
             <StaggerItem key={i}>
               <div className="group">
                 {/* Number */}
